@@ -1,13 +1,23 @@
-import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 
 import pieces.*;
+import pieces.Color; //resolve naming collision with awt.Color
 
+/**
+ * Represents the main game panel
+ */
 public class GamePanel extends JPanel
 {
 	private ImageIcon boardImage;
 	private Piece[][] board;
+	
+	private boolean isWhitesTurn; //true if it is currently white's turn
+	
+	//Space of the currently selected piece. null if no piece is selected.
+	//Values range from 0-8. x=column, y=row
+	private Point selectedSpace;
 	
 	private static final int BOARD_SIZE = 8; //number of rows/columns on the board
 	private final int SPACE_SIZE; //dimensions of a space in pixels
@@ -42,14 +52,20 @@ public class GamePanel extends JPanel
 		board[7][6] = new Knight(Color.WHITE);
 		board[7][7] = new Rook(Color.WHITE);
 		
+		isWhitesTurn = true;
+		
 		boardImage = new ImageIcon("resources/chessboard.png");
 		SPACE_SIZE = boardImage.getIconWidth() / BOARD_SIZE;
+		
+		ClickListener listener = new ClickListener();
+		addMouseListener(listener);
 		
 		setPreferredSize(new Dimension(boardImage.getIconWidth(), boardImage.getIconHeight()));
 	}
 	
 	public void paintComponent(Graphics g)
 	{
+		super.paintComponent(g);
 		boardImage.paintIcon(this, g, 0, 0);
 		
 		for (int r = 0; r < BOARD_SIZE; r++)
@@ -62,5 +78,63 @@ public class GamePanel extends JPanel
 				}
 			}
 		}
+	}
+	
+	private class ClickListener implements MouseListener
+	{
+		@Override
+		public void mouseClicked(MouseEvent e)
+		{
+			//integer division done to get the index in the board array
+			int r = e.getY() / SPACE_SIZE;
+			int c = e.getX() / SPACE_SIZE;
+			
+			if (selectedSpace == null)
+			{
+				Piece clicked = board[r][c];
+				
+				if (clicked != null)
+				{
+					if (isWhitesTurn)
+					{
+						if (clicked.getColor() == Color.WHITE)
+						{
+							System.out.println("good1!");
+							selectedSpace = new Point(c, r);
+						}
+					}
+					else
+					{
+						if (clicked.getColor() == Color.BLACK)
+						{
+							System.out.println("good2!");
+							selectedSpace = new Point(c, r);
+						}
+					}
+				}
+			}
+			else //piece is selected
+			{
+				//TODO TEST
+				board[r][c] = board[selectedSpace.y][selectedSpace.x];
+				board[selectedSpace.y][selectedSpace.x] = null;
+				selectedSpace = null;
+				
+				isWhitesTurn = !isWhitesTurn;
+				
+				repaint();
+			}
+		}
+
+		//Unimplemented methods:
+		@Override
+		public void mousePressed(MouseEvent e) {}
+		@Override
+		public void mouseReleased(MouseEvent e) {}
+		@Override
+		public void mouseEntered(MouseEvent e) {}
+		@Override
+		public void mouseExited(MouseEvent e) {}
+		
 	}
 }
