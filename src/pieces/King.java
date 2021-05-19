@@ -17,6 +17,12 @@ public class King extends Piece
 	}
 	
 	@Override
+	public boolean canMove(Piece[][] board, int row, int col)
+	{
+		return true;
+	}
+	
+	@Override
 	public String toString()
 	{
 		return super.toString() + "K";

@@ -99,7 +99,7 @@ public class GamePanel extends JPanel
 					{
 						if (clicked.getColor() == Color.WHITE)
 						{
-							System.out.println("good1!");
+							System.out.println("white selected " + clicked + " at " + r + "," + c);
 							selectedSpace = new Point(c, r);
 						}
 					}
@@ -107,22 +107,31 @@ public class GamePanel extends JPanel
 					{
 						if (clicked.getColor() == Color.BLACK)
 						{
-							System.out.println("good2!");
+							System.out.println("black selected " + clicked + " at " + r + "," + c);
 							selectedSpace = new Point(c, r);
 						}
 					}
 				}
 			}
-			else //piece is selected
+			else //piece is already selected
 			{
-				//TODO TEST
-				board[r][c] = board[selectedSpace.y][selectedSpace.x];
-				board[selectedSpace.y][selectedSpace.x] = null;
-				selectedSpace = null;
-				
-				isWhitesTurn = !isWhitesTurn;
-				
-				repaint();
+				if (board[r][c] != null && board[selectedSpace.y][selectedSpace.x].getColor() == board[r][c].getColor())
+				{
+					//switch selection if a piece of the same color is selected
+					System.out.println("switched selection to " + board[r][c] + " at " + r + "," + c);
+					selectedSpace = new Point(c, r);
+				}
+				else if (board[selectedSpace.y][selectedSpace.x].canMove(board, r, c))
+				{
+					//move the piece and switch turns
+					board[r][c] = board[selectedSpace.y][selectedSpace.x];
+					board[selectedSpace.y][selectedSpace.x] = null;
+					selectedSpace = null;
+					
+					isWhitesTurn = !isWhitesTurn;
+					
+					repaint();
+				}
 			}
 		}
 

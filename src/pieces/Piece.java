@@ -34,6 +34,16 @@ public abstract class Piece
 		this.image = image;
 	}
 	
+	/**
+	 * Determines if a piece can legally move to a space
+	 * 
+	 * @param board the chessboard
+	 * @param row the row to move to
+	 * @param col the column to move to
+	 * @return true if the move can be legally made
+	 */
+	public abstract boolean canMove(Piece[][] board, int row, int col);
+	
 	@Override
 	public String toString()
 	{
