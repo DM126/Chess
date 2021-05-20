@@ -88,22 +88,32 @@ public class GamePanel extends JPanel
 			}
 			else //piece is already selected
 			{
+				//if a piece of the same color is selected, switch selection
 				if (board.getPiece(r, c) != null && 
 					board.getPiece(selectedSpace.y, selectedSpace.x).getColor() == board.getPiece(r, c).getColor())
 				{
-					//switch selection if a piece of the same color is selected
 					System.out.println("switched selection to " + board.getPiece(r, c) + " at " + r + "," + c);
 					selectedSpace = new Point(c, r);
 				}
-				else if (board.getPiece(selectedSpace.y, selectedSpace.x).canMove(board, selectedSpace.y, selectedSpace.x, r, c))
+				else //new selection is empty space or different color
 				{
-					//move the piece, unselect the space, and switch turns
-					board.movePiece(selectedSpace.y, selectedSpace.x, r, c);
+					//test if the piece can move
+					if (board.getPiece(selectedSpace.y, selectedSpace.x).canMove(board, selectedSpace.y, selectedSpace.x, r, c))
+					{
+						//move the piece and switch turns
+						board.movePiece(selectedSpace.y, selectedSpace.x, r, c);
+						System.out.println("moved " + board.getPiece(r, c) + " to " + r + "," + c);
+						
+						isWhitesTurn = !isWhitesTurn;
+						
+						repaint();
+					}
+					else //TODO debug remove
+					{
+						System.out.println("could not move to " + r + "," + c);
+					}
+					
 					selectedSpace = null;
-					
-					isWhitesTurn = !isWhitesTurn;
-					
-					repaint();
 				}
 			}
 		}
