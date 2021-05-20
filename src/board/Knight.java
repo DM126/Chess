@@ -1,33 +1,30 @@
-package pieces;
+package board;
 import javax.swing.ImageIcon;
 
-public class Rook extends Piece
+public class Knight extends Piece
 {
-	public Rook(Color color)
+	public Knight(Color color)
 	{
 		super(color);
 		if (color == Color.BLACK)
 		{
-			image = new ImageIcon("resources/pieces/blackrook.png");
+			image = new ImageIcon("resources/pieces/blackknight.png");
 		}
 		else
 		{
-			image = new ImageIcon("resources/pieces/whiterook.png");
+			image = new ImageIcon("resources/pieces/whiteknight.png");
 		}
 	}
 	
 	@Override
 	public boolean canMove(Board board, int startRow, int startCol, int endRow, int endCol)
 	{
-		//can move either horizontally or vertically
-		
-		
 		return true;
 	}
 	
 	@Override
 	public String toString()
 	{
-		return super.toString() + "R";
+		return super.toString() + "N";
 	}
 }

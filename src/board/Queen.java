@@ -1,18 +1,18 @@
-package pieces;
+package board;
 import javax.swing.ImageIcon;
 
-public class Bishop extends Piece
+public class Queen extends Piece
 {
-	public Bishop(Color color)
+	public Queen(Color color)
 	{
 		super(color);
 		if (color == Color.BLACK)
 		{
-			image = new ImageIcon("resources/pieces/blackbishop.png");
+			image = new ImageIcon("resources/pieces/blackqueen.png");
 		}
 		else
 		{
-			image = new ImageIcon("resources/pieces/whitebishop.png");
+			image = new ImageIcon("resources/pieces/whitequeen.png");
 		}
 	}
 	
@@ -25,6 +25,6 @@ public class Bishop extends Piece
 	@Override
 	public String toString()
 	{
-		return super.toString() + "B";
+		return super.toString() + "Q";
 	}
 }

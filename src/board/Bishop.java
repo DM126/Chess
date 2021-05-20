@@ -1,18 +1,18 @@
-package pieces;
+package board;
 import javax.swing.ImageIcon;
 
-public class Knight extends Piece
+public class Bishop extends Piece
 {
-	public Knight(Color color)
+	public Bishop(Color color)
 	{
 		super(color);
 		if (color == Color.BLACK)
 		{
-			image = new ImageIcon("resources/pieces/blackknight.png");
+			image = new ImageIcon("resources/pieces/blackbishop.png");
 		}
 		else
 		{
-			image = new ImageIcon("resources/pieces/whiteknight.png");
+			image = new ImageIcon("resources/pieces/whitebishop.png");
 		}
 	}
 	
@@ -25,6 +25,6 @@ public class Knight extends Piece
 	@Override
 	public String toString()
 	{
-		return super.toString() + "N";
+		return super.toString() + "B";
 	}
 }

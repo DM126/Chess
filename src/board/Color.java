@@ -1,4 +1,4 @@
-package pieces;
+package board;
 
 /**
  * Represents a piece color

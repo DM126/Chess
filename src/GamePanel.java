@@ -2,8 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import pieces.*;
-import pieces.Color; //resolve naming collision with awt.Color
+import board.*;
 
 /**
  * Represents the main game panel
