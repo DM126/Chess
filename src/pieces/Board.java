@@ -2,15 +2,17 @@ package pieces;
 
 public class Board
 {
-	//Begins at (0, 0) with black rook, ends at (7, 7) with white rook
+	//Begins at (0, 0) with black rook, ends at (7, 7) with white rook.
+	//Note: rows are backwards from official chess notation, so space 6E will
+	//be represented as [1][4], 1A will be [7][0], etc. (columns are the same)
 	private Piece[][] board;
 	
 	//number of rows/columns on the board
-	public static final int BOARD_SIZE = 8;
+	public static final int BOARD_LENGTH = 8;
 	
 	public Board()
 	{
-		board = new Piece[BOARD_SIZE][BOARD_SIZE];
+		board = new Piece[BOARD_LENGTH][BOARD_LENGTH];
 		board[0][0] = new Rook(Color.BLACK);
 		board[0][1] = new Knight(Color.BLACK);
 		board[0][2] = new Bishop(Color.BLACK);
@@ -19,12 +21,12 @@ public class Board
 		board[0][5] = new Bishop(Color.BLACK);
 		board[0][6] = new Knight(Color.BLACK);
 		board[0][7] = new Rook(Color.BLACK);
-		for (int i = 0; i < BOARD_SIZE; i++)
+		for (int i = 0; i < BOARD_LENGTH; i++)
 		{
 			board[1][i] = new Pawn(Color.BLACK);
 		}
 		
-		for (int i = 0; i < BOARD_SIZE; i++)
+		for (int i = 0; i < BOARD_LENGTH; i++)
 		{
 			board[6][i] = new Pawn(Color.WHITE);
 		}
