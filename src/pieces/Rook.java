@@ -17,8 +17,11 @@ public class Rook extends Piece
 	}
 	
 	@Override
-	public boolean canMove(Piece[][] board, int row, int col)
+	public boolean canMove(Board board, int startRow, int startCol, int endRow, int endCol)
 	{
+		//can move either horizontally or vertically
+		
+		
 		return true;
 	}
 	
