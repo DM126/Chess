@@ -19,6 +19,12 @@ public class Bishop extends Piece
 	@Override
 	public boolean canMove(Board board, int startRow, int startCol, int endRow, int endCol)
 	{
+		//cannot move to current position
+		if (startRow == endRow && startCol == endCol)
+		{
+			return false;
+		}
+		
 		//can move diagonally
 		if (Math.abs(startRow - endRow) == Math.abs(startCol - endCol))
 		{

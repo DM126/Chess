@@ -19,6 +19,12 @@ public class Queen extends Piece
 	@Override
 	public boolean canMove(Board board, int startRow, int startCol, int endRow, int endCol)
 	{
+		//cannot move to current position
+		if (startRow == endRow && startCol == endCol)
+		{
+			return false;
+		}
+		
 		//Can move diagonally, horizontally, or vertically
 		//TODO code duplicated from bishop and rook, refactor?
 		if (Math.abs(startRow - endRow) == Math.abs(startCol - endCol))

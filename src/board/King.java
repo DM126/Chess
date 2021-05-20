@@ -21,7 +21,8 @@ public class King extends Piece
 	{
 		//can move 1 space in any direction
 		return (Math.abs(startRow - endRow) <= 1 &&
-				Math.abs(startCol - endCol) <= 1);
+				Math.abs(startCol - endCol) <= 1 &&
+				!(startRow == endRow && startCol == endCol));
 	}
 	
 	@Override
