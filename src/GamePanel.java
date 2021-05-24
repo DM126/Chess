@@ -226,6 +226,10 @@ public class GamePanel extends JPanel
 			{
 				promoted = new Bishop(pawn.getColor());
 			}
+			else if (promoteTo == "Knight")
+			{
+				promoted = new Knight(pawn.getColor());
+			}
 			else if (promoteTo == "Rook")
 			{
 				promoted = new Rook(pawn.getColor());
@@ -245,7 +249,7 @@ public class GamePanel extends JPanel
 	 */
 	private String promotionPrompt()
 	{
-		String[] options = {"Bishop", "Rook", "Queen"};
+		String[] options = {"Bishop", "Knight", "Rook", "Queen"};
 		int choice;
 		do
 		{
