@@ -1,11 +1,17 @@
 package board;
 
+import java.awt.Point;
+
 public class Board
 {
 	//Begins at (0, 0) with black rook, ends at (7, 7) with white rook.
 	//Note: rows are backwards from official chess notation, so space 6E will
 	//be represented as [1][4], 1A will be [7][0], etc. (columns are the same)
 	private Piece[][] board;
+	
+	//Locations of the white and black kings, used for determining if in check
+	private Point blackKingSpace;
+	private Point whiteKingSpace;
 	
 	//number of rows/columns on the board
 	public static final int BOARD_LENGTH = 8;
@@ -18,6 +24,7 @@ public class Board
 		board[0][2] = new Bishop(Color.BLACK);
 		board[0][3] = new Queen(Color.BLACK);
 		board[0][4] = new King(Color.BLACK);
+		blackKingSpace = new Point(4, 0);
 		board[0][5] = new Bishop(Color.BLACK);
 		board[0][6] = new Knight(Color.BLACK);
 		board[0][7] = new Rook(Color.BLACK);
@@ -35,6 +42,7 @@ public class Board
 		board[7][2] = new Bishop(Color.WHITE);
 		board[7][3] = new Queen(Color.WHITE);
 		board[7][4] = new King(Color.WHITE);
+		whiteKingSpace = new Point(4, 7);
 		board[7][5] = new Bishop(Color.WHITE);
 		board[7][6] = new Knight(Color.WHITE);
 		board[7][7] = new Rook(Color.WHITE);
@@ -89,5 +97,34 @@ public class Board
 	{
 		board[endRow][endCol] = board[startRow][startCol];
 		board[startRow][startCol] = null;
+		
+		//Keep track of king locations
+		if (board[endRow][endCol] instanceof King)
+		{
+			if (board[endRow][endCol].getColor() == Color.BLACK)
+			{
+				blackKingSpace.setLocation(endCol, endRow);
+			}
+			else
+			{
+				whiteKingSpace.setLocation(endCol, endRow);
+			}
+		}
+	}
+	
+	/**
+	 * @return the location of the white king
+	 */
+	public Point getWhiteKingSpace()
+	{
+		return whiteKingSpace;
+	}
+	
+	/**
+	 * @return the location of the black king
+	 */
+	public Point getBlackKingSpace()
+	{
+		return blackKingSpace;
 	}
 }
