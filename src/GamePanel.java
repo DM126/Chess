@@ -115,19 +115,29 @@ public class GamePanel extends JPanel
 				//test if the piece can move
 				if (board.getPiece(selectedSpace.y, selectedSpace.x).canMove(board, selectedSpace.y, selectedSpace.x, row, col))
 				{
-					//move the piece and switch turns
-					board.movePiece(selectedSpace.y, selectedSpace.x, row, col);
-					System.out.println("moved " + board.getPiece(row, col) + " to " + row + "," + col);
-					
-					//check for pawn promotion
-					if (board.getPiece(row, col) instanceof Pawn)
+					//only make the move if it doesn't leave the king in check
+					if (!leavesKingInCheck(selectedSpace.y, selectedSpace.x, row, col))
 					{
-						promotePawn(row, col);
+						//move the piece and switch turns
+						board.movePiece(selectedSpace.y, selectedSpace.x, row, col);
+						System.out.println("moved " + board.getPiece(row, col) + " to " + row + "," + col);
+						
+						//check for pawn promotion
+						if (board.getPiece(row, col) instanceof Pawn)
+						{
+							promotePawn(row, col);
+						}
+						
+						isWhitesTurn = !isWhitesTurn;
+						
+						//TODO check for check/checkmate
+						
+						repaint();
 					}
-					
-					isWhitesTurn = !isWhitesTurn;
-					
-					repaint();
+					else //TODO debug remove
+					{
+						System.out.println("could not move - would leave king in check");
+					}
 				}
 				else //TODO debug remove
 				{
@@ -137,6 +147,65 @@ public class GamePanel extends JPanel
 				selectedSpace = null;
 			}
 		}
+	}
+	
+	/**
+	 * Determines if the king of the given color is in check
+	 * 
+	 * @param color the color of the king in check
+	 * @return true if the king is in check
+	 */
+	public boolean inCheck(Color color)
+	{
+		Point kingSpace = color == Color.BLACK ? board.getBlackKingSpace() : board.getWhiteKingSpace();
+		
+		//Check each piece of the other color and see if it can take the king
+		for (int r = 0; r < Board.BOARD_LENGTH; r++)
+		{
+			for (int c = 0; c < Board.BOARD_LENGTH; c++)
+			{
+				Piece piece = board.getPiece(r, c);
+				if (piece != null && piece.getColor() != color)
+				{
+					if (piece.canMove(board, r, c, kingSpace.y, kingSpace.x))
+					{
+						//TODO debug remove
+						System.out.println(color + " king is in check");
+						
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Simulates a move and determines if it would leave the king in check.
+	 * Starting space must contain a piece.
+	 * 
+	 * @param startRow the starting row of the piece
+	 * @param startCol the starting column of the piece
+	 * @param endRow the ending row of the piece
+	 * @param endCol the ending column of the piece
+	 * @return true if the move would leave the king in check
+	 */
+	public boolean leavesKingInCheck(int startRow, int startCol, int endRow, int endCol)
+	{
+		//Keep track of board state
+		Piece startPiece = board.getPiece(startRow, startCol);
+		Piece endPiece = board.getPiece(endRow, endCol);
+		
+		board.movePiece(startRow, startCol, endRow, endCol);
+		boolean isInCheck = inCheck(startPiece.getColor());
+		
+		//revert board state
+		board.movePiece(endRow, endCol, startRow, startCol);
+		board.setPiece(endPiece, endRow, endCol);
+		
+		
+		return isInCheck;
 	}
 	
 	/**
