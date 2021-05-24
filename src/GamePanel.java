@@ -19,7 +19,8 @@ public class GamePanel extends JPanel
 	//Values range from 0-8. x=column, y=row
 	private Point selectedSpace;
 
-	private final int SPACE_SIZE; //dimensions of a space in pixels
+	//dimensions of a space in pixels, used for drawing the pieces
+	private final int SPACE_SIZE;
 	
 	public GamePanel()
 	{
@@ -107,7 +108,7 @@ public class GamePanel extends JPanel
 				board.getPiece(selectedSpace.y, selectedSpace.x).getColor() == board.getPiece(row, col).getColor())
 			{
 				System.out.println("switched selection to " + board.getPiece(row, col) + " at " + row + "," + col);
-				selectedSpace = new Point(col, row);
+				selectedSpace.setLocation(col, row);
 			}
 			else //new selection is empty space or different color
 			{
