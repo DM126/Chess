@@ -128,9 +128,30 @@ public class GamePanel extends JPanel
 							promotePawn(row, col);
 						}
 						
-						isWhitesTurn = !isWhitesTurn;
+						if (isWhitesTurn)
+						{
+							if (checkmate(Color.BLACK))
+							{
+								System.out.println("White wins!");
+							}
+							else if (inCheck(Color.BLACK))
+							{
+								System.out.println("Black king in check.");
+							}
+						}
+						else
+						{
+							if (checkmate(Color.WHITE))
+							{
+								System.out.println("Black wins!");
+							}
+							else if (inCheck(Color.BLACK))
+							{
+								System.out.println("White king in check.");
+							}
+						}
 						
-						//TODO check for check/checkmate
+						isWhitesTurn = !isWhitesTurn;
 						
 						repaint();
 					}
@@ -179,6 +200,42 @@ public class GamePanel extends JPanel
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Determines if the color is in checkmate. If this method returns
+	 * true then the color passed as the argument loses.
+	 * 
+	 * @param color the color to check
+	 * @return true if the color is in checkmate
+	 */
+	public boolean checkmate(Color color)
+	{
+		//check if there are any valid moves that would not leave the king in check
+		for (int r1 = 0; r1 < Board.BOARD_LENGTH; r1++)
+		{
+			for (int c1 = 0; c1 < Board.BOARD_LENGTH; c1++)
+			{
+				Piece piece = board.getPiece(r1, c1);
+				if (piece != null && piece.getColor() == color)
+				{
+					for (int r2 = 0; r2 < Board.BOARD_LENGTH; r2++)
+					{
+						for (int c2 = 0; c2 < Board.BOARD_LENGTH; c2++)
+						{
+							if (!(r1 == r2 && c1 == c2) &&
+								piece.canMove(board, r1, c1, r2, c2) &&
+								!leavesKingInCheck(r1, c1, r2, c2))
+							{
+								return false;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return true;
 	}
 	
 	/**
