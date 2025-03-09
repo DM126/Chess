@@ -41,6 +41,7 @@ public class GamePanel extends JPanel
 		
 	}
 	
+	@Override
 	public void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
@@ -259,15 +260,15 @@ public class GamePanel extends JPanel
 		{
 			String promoteTo = promotionPrompt();
 			Piece promoted;
-			if (promoteTo == "Bishop")
+			if (promoteTo.equals("Bishop"))
 			{
 				promoted = new Bishop(pawn.getColor());
 			}
-			else if (promoteTo == "Knight")
+			else if (promoteTo.equals("Knight"))
 			{
 				promoted = new Knight(pawn.getColor());
 			}
-			else if (promoteTo == "Rook")
+			else if (promoteTo.equals("Rook"))
 			{
 				promoted = new Rook(pawn.getColor());
 			}

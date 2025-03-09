@@ -8,9 +8,12 @@ public abstract class Piece
 {
 	protected Color color; //either black or white
 	protected ImageIcon image;
-	protected int row, column; //location of the piece
 	
-	public Piece(Color color)
+	//location of the piece on the board
+	protected int row;
+	protected int column;
+	
+	protected Piece(Color color)
 	{
 		this.color = color;
 	}
@@ -20,7 +23,7 @@ public abstract class Piece
 		return color;
 	}
 	
-	public void SetColor(Color color)
+	public void setColor(Color color)
 	{
 		this.color = color;
 	}
@@ -30,7 +33,7 @@ public abstract class Piece
 		return image;
 	}
 	
-	public void SetImage(ImageIcon image)
+	public void setImage(ImageIcon image)
 	{
 		this.image = image;
 	}
