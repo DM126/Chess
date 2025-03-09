@@ -1,14 +1,12 @@
 package board;
 
+import java.awt.Point;
+
 public class Pawn extends Piece
-{
-	//Used to tell if the pawn is on the starting row, and if it can be captured en passant
-	private boolean canBeCapturedEnPassant;
-	
+{	
 	public Pawn(Color color)
 	{
 		super(color);
-		canBeCapturedEnPassant = false;
 	}
 	
 	@Override
@@ -19,7 +17,6 @@ public class Pawn extends Piece
 			return false;
 		}
 		
-		//TODO add en passant
 		//Black moves down the board (positive direction), white moves up the board (negative direction)
 		int rowDiff = (color == Color.BLACK) ? 1 : -1;
 		
@@ -27,19 +24,37 @@ public class Pawn extends Piece
 		{
 			//Movement must be vertical if space is empty
 			//pawns can move 1 space forward, or two if on starting row
-			if (startCol == endCol && 
-				(endRow - startRow == 1 * rowDiff || canMoveTwoSpacesForward(board, startRow, startCol, endRow, endCol)))
+			//Can move diagonally to empty space if capturing en passant
+			if (isLegalVerticalMove(board, startRow, startCol, endRow, endCol, rowDiff) ||
+				isEnPassantMove(board, startRow, startCol, endRow, endCol, rowDiff) )
 			{
 				return true;
 			}
 		}
-		else if (Math.abs(startCol - endCol) == 1 && endRow - startRow == 1 * rowDiff)
+		else if (isDiagonalMoveOneSpaceForward(startRow, startCol, endRow, endCol, rowDiff))
 		{
 			//space not empty, must be 1 space forward diagonally
 			return true;
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Checks if the move is a legal vertical move (one space forward, or two if on starting row).
+	 * 
+	 * @param board the chessboard
+	 * @param startRow the starting row
+	 * @param startCol the starting column
+	 * @param endRow the ending row (should be two spaces forward)
+	 * @param endCol the ending column (should be the same)
+	 * @param rowDiff the direction (1 for black, -1 for white)
+	 * @return
+	 */
+	private boolean isLegalVerticalMove(Board board, int startRow, int startCol, int endRow, int endCol, int rowDiff)
+	{
+		return startCol == endCol
+			&& (endRow - startRow == 1 * rowDiff || canMoveTwoSpacesForward(board, startRow, startCol, endRow, endCol));
 	}
 	
 	/**
@@ -62,6 +77,28 @@ public class Pawn extends Piece
 				startRow == Board.BOARD_LENGTH - 2 && 
 				endRow == startRow - 2 && 
 				board.isEmptySpace(startRow - 1,  startCol));
+	}
+	
+	/**
+	 * Checks if the move is one space forward diagonally.
+	 * 
+	 * @param startrow the starting row
+	 * @param startCol the starting column
+	 * @param endRow the ending row
+	 * @param endCol the ending column
+	 * @param rowDiff the direction (1 for black, -1 for white)
+	 * @return true if the move is one space forward diagonally
+	 */
+	private boolean isDiagonalMoveOneSpaceForward(int startRow, int startCol, int endRow, int endCol, int rowDiff)
+	{
+		return Math.abs(startCol - endCol) == 1 && endRow - startRow == 1 * rowDiff;
+	}
+	
+	private boolean isEnPassantMove(Board board, int startRow, int startCol, int endRow, int endCol, int rowDiff)
+	{
+		return isDiagonalMoveOneSpaceForward(startRow, startCol, endRow, endCol, rowDiff) && 
+				board.getEnPassantSpace() != null && 
+				board.getEnPassantSpace().equals(new Point(endCol, endRow));
 	}
 	
 	@Override

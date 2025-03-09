@@ -13,6 +13,8 @@ public class Board
 	private Piece blackKing;
 	private Piece whiteKing;
 	
+	private Point enPassantSpace;
+	
 	//number of rows/columns on the board
 	public static final int BOARD_LENGTH = 8;
 	
@@ -60,6 +62,8 @@ public class Board
 				}
 			}
 		}
+		
+		enPassantSpace = null;
 	}
 	
 	/**
@@ -103,6 +107,22 @@ public class Board
 	}
 	
 	/**
+	 * Simulates a single move without changing any other information
+	 * being tracked, like number of moves or en passant spaces. Empties
+	 * the starting space.
+	 * 
+	 * @param startRow the starting row
+	 * @param startCol the starting column
+	 * @param endRow the ending row
+	 * @param endCol the ending column
+	 */
+	public void simulateMove(int startRow, int startCol, int endRow, int endCol)
+	{
+		setPiece(board[startRow][startCol], endRow, endCol);
+		board[startRow][startCol] = null;
+	}
+	
+	/**
 	 * Moves a piece from one space to another, empties the starting space.
 	 * Does not check if spaces are empty or filled, only changes values!
 	 * 
@@ -113,8 +133,10 @@ public class Board
 	 */
 	public void movePiece(int startRow, int startCol, int endRow, int endCol)
 	{
-		setPiece(board[startRow][startCol], endRow, endCol);
-		board[startRow][startCol] = null;
+		simulateMove(startRow, startCol, endRow, endCol);
+		
+		//Check if en passant is possible after the move
+		setEnpassant(startRow, endRow, endCol);
 	}
 	
 	/**
@@ -131,5 +153,37 @@ public class Board
 	public Point getBlackKingSpace()
 	{
 		return blackKing.getLocation();
+	}
+	
+	/**
+	 * Gets the location of a possible en passant space. Will be null if no 
+	 * en passant is possible.
+	 * 
+	 * @return the point on the board where an en passant capture can be made
+	 */
+	public Point getEnPassantSpace()
+	{
+		return enPassantSpace;
+	}
+	
+	/**
+	 * Checks if en passant is possible after a move.
+	 * 
+	 * @param startRow the starting row of the move
+	 * @param startCol the starting column of the move
+	 * @param endRow the ending row of the move
+	 * @param endCol the ending column of the move
+	 */
+	private void setEnpassant(int startRow, int endRow, int endCol)
+	{
+		if (Math.abs(startRow - endRow) == 2 && board[endRow][endCol] instanceof Pawn)
+		{
+			enPassantSpace = new Point(endCol, startRow == 1 ? endRow - 1 : endRow + 1);
+			System.out.println("En passant possible at " + enPassantSpace);
+		}
+		else
+		{
+			enPassantSpace = null;
+		}
 	}
 }

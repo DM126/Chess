@@ -230,11 +230,11 @@ public class GamePanel extends JPanel
 		Piece startPiece = board.getPiece(startRow, startCol);
 		Piece endPiece = board.getPiece(endRow, endCol);
 		
-		board.movePiece(startRow, startCol, endRow, endCol);
+		board.simulateMove(startRow, startCol, endRow, endCol);
 		boolean isInCheck = inCheck(startPiece.getColor());
 		
 		//revert board state
-		board.movePiece(endRow, endCol, startRow, startCol);
+		board.simulateMove(endRow, endCol, startRow, startCol);
 		board.setPiece(endPiece, endRow, endCol);
 		
 		return isInCheck;
