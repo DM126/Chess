@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
 import board.*;
@@ -18,7 +17,8 @@ public class GamePanel extends JPanel
 	//Displays the previous move and current game state
 	JLabel stateDescription;
 	
-	private boolean isWhitesTurn; //true if it is currently white's turn
+//	private boolean isWhitesTurn; //true if it is currently white's turn
+	private Color turn; //the color whose turn it is
 	
 	//Space of the currently selected piece. null if no piece is selected.
 	//Values range from 0-8. x=column, y=row
@@ -28,7 +28,7 @@ public class GamePanel extends JPanel
 	{
 		board = new Board();
 		
-		isWhitesTurn = true;
+		turn = Color.WHITE;
 		
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
@@ -62,93 +62,75 @@ public class GamePanel extends JPanel
 		{
 			Piece clicked = board.getPiece(row, col);
 			
-			if (clicked != null)
+			if (clicked != null && clicked.getColor() == turn)
 			{
-				if (isWhitesTurn)
-				{
-					if (clicked.getColor() == Color.WHITE)
-					{
-						System.out.println("white selected " + clicked + " at " + row + "," + col);
-						selectedSpace = new Point(col, row);
-					}
-				}
-				else
-				{
-					if (clicked.getColor() == Color.BLACK)
-					{
-						System.out.println("black selected " + clicked + " at " + row + "," + col);
-						selectedSpace = new Point(col, row);
-					}
-				}
+				System.out.println(turn + " selected " + clicked + " at " + row + "," + col);
+				selectedSpace = new Point(col, row);
 			}
 		}
-		else //piece is already selected
-		{
-			//if a piece of the same color is selected, switch selection
-			if (board.getPiece(row, col) != null && 
+		//if a piece of the same color is selected, switch selection
+		else if (board.getPiece(row, col) != null && 
 				board.getPiece(selectedSpace.y, selectedSpace.x).getColor() == board.getPiece(row, col).getColor())
+		{
+			System.out.println("switched selection to " + board.getPiece(row, col) + " at " + row + "," + col);
+			selectedSpace.setLocation(col, row);
+		}
+		else //new selection is empty space or different color
+		{
+			//test if the piece can move
+			if (board.getPiece(selectedSpace.y, selectedSpace.x).canMove(board, selectedSpace.y, selectedSpace.x, row, col))
 			{
-				System.out.println("switched selection to " + board.getPiece(row, col) + " at " + row + "," + col);
-				selectedSpace.setLocation(col, row);
-			}
-			else //new selection is empty space or different color
-			{
-				//test if the piece can move
-				if (board.getPiece(selectedSpace.y, selectedSpace.x).canMove(board, selectedSpace.y, selectedSpace.x, row, col))
+				//only make the move if it doesn't leave the king in check
+				if (!leavesKingInCheck(selectedSpace.y, selectedSpace.x, row, col))
 				{
-					//only make the move if it doesn't leave the king in check
-					if (!leavesKingInCheck(selectedSpace.y, selectedSpace.x, row, col))
-					{
-						//move the piece and switch turns
-						board.movePiece(selectedSpace.y, selectedSpace.x, row, col);
-						System.out.println("moved " + board.getPiece(row, col) + " to " + row + "," + col);
-						
-						//check for pawn promotion
-						if (board.getPiece(row, col) instanceof Pawn)
-						{
-							promotePawn(row, col);
-						}
-						
-						if (isWhitesTurn)
-						{
-							if (checkmate(Color.BLACK))
-							{
-								System.out.println("White wins!");
-							}
-							else if (inCheck(Color.BLACK))
-							{
-								System.out.println("Black king in check.");
-							}
-						}
-						else
-						{
-							if (checkmate(Color.WHITE))
-							{
-								System.out.println("Black wins!");
-							}
-							else if (inCheck(Color.BLACK))
-							{
-								System.out.println("White king in check.");
-							}
-						}
-						
-						isWhitesTurn = !isWhitesTurn;
-						
-						repaint();
-					}
-					else //TODO debug remove
-					{
-						System.out.println("could not move - would leave king in check");
-					}
+					makeMove(row, col);
 				}
 				else //TODO debug remove
 				{
-					System.out.println("could not move " + board.getPiece(selectedSpace.y, selectedSpace.x) + " to " + row + "," + col);
+					System.out.println("could not move - would leave king in check");
 				}
-				
-				selectedSpace = null;
 			}
+			else //TODO debug remove
+			{
+				System.out.println("could not move " + board.getPiece(selectedSpace.y, selectedSpace.x) + " to " + row + "," + col);
+			}
+			
+			selectedSpace = null;
 		}
+	}
+	
+	/**
+	 * Move the piece at the currently selected space to the passed in row/column and switch turns.
+	 * 
+	 * @param destinationRow the destination row
+	 * @param destinationCol the destination column
+	 */
+	private void makeMove(int destinationRow, int destinationCol)
+	{
+		//move the piece and switch turns
+		board.movePiece(selectedSpace.y, selectedSpace.x, destinationRow, destinationCol);
+		System.out.println("moved " + board.getPiece(destinationRow, destinationCol) + " to " + destinationRow + "," + destinationCol);
+		
+		//check for pawn promotion
+		if (board.getPiece(destinationRow, destinationCol) instanceof Pawn)
+		{
+			promotePawn(destinationRow, destinationCol);
+		}
+		
+		Color oppositeColor = turn.getOppositeColor();
+		if (checkmate(oppositeColor))
+		{
+			System.out.println(turn + " wins!");
+		}
+		else if (inCheck(oppositeColor))
+		{
+			System.out.println(oppositeColor + " king in check.");
+		}
+		
+		//Change turns
+		turn = oppositeColor;
+		
+		repaint();
 	}
 	
 	/**
