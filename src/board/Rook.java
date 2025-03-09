@@ -1,5 +1,4 @@
 package board;
-import javax.swing.ImageIcon;
 
 public class Rook extends Piece
 {
