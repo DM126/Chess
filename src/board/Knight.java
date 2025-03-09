@@ -11,7 +11,8 @@ public class Knight extends Piece
 	public boolean canMove(Board board, int startRow, int startCol, int endRow, int endCol)
 	{
 		//can move in an L shape
-		return ((Math.abs(startRow - endRow) == 2 && Math.abs(startCol - endCol) == 1) ||
+		return super.canMove(board, startRow, startCol, endRow, endCol) &&
+				((Math.abs(startRow - endRow) == 2 && Math.abs(startCol - endCol) == 1) ||
 				(Math.abs(startRow - endRow) == 1 && Math.abs(startCol - endCol) == 2));
 	}
 	

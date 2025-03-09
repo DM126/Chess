@@ -10,8 +10,9 @@ public class Queen extends Piece
 	@Override
 	public boolean canMove(Board board, int startRow, int startCol, int endRow, int endCol)
 	{
-		return isClearDiagonalPath(board, startRow, startCol, endRow, endCol) 
-			|| isClearHorizontalOrVerticalPath(board, startRow, startCol, endRow, endCol);
+		return super.canMove(board, startRow, startCol, endRow, endCol) &&
+				(isClearDiagonalPath(board, startRow, startCol, endRow, endCol)
+				|| isClearHorizontalOrVerticalPath(board, startRow, startCol, endRow, endCol));
 	}
 	
 	@Override

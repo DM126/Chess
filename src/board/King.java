@@ -9,11 +9,11 @@ public class King extends Piece
 	
 	@Override
 	public boolean canMove(Board board, int startRow, int startCol, int endRow, int endCol)
-	{
+	{	
 		//can move 1 space in any direction
-		return (Math.abs(startRow - endRow) <= 1 &&
-				Math.abs(startCol - endCol) <= 1 &&
-				!(startRow == endRow && startCol == endCol));
+		return super.canMove(board, startRow, startCol, endRow, endCol) &&
+				Math.abs(startRow - endRow) <= 1 &&
+				Math.abs(startCol - endCol) <= 1;
 	}
 	
 	@Override

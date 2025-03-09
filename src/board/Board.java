@@ -9,22 +9,23 @@ public class Board
 	//be represented as [1][4], 1A will be [7][0], etc. (columns are the same)
 	private Piece[][] board;
 	
-	//Locations of the white and black kings, used for determining if in check
-	private Point blackKingSpace;
-	private Point whiteKingSpace;
+	//LKeep track of white and black kings, used for determining if in check
+	private Piece blackKing;
+	private Piece whiteKing;
 	
 	//number of rows/columns on the board
 	public static final int BOARD_LENGTH = 8;
 	
 	public Board()
 	{
+		//Create the black pieces
 		board = new Piece[BOARD_LENGTH][BOARD_LENGTH];
 		board[0][0] = new Rook(Color.BLACK);
 		board[0][1] = new Knight(Color.BLACK);
 		board[0][2] = new Bishop(Color.BLACK);
 		board[0][3] = new Queen(Color.BLACK);
-		board[0][4] = new King(Color.BLACK);
-		blackKingSpace = new Point(4, 0);
+		blackKing = new King(Color.BLACK);
+		board[0][4] = blackKing;
 		board[0][5] = new Bishop(Color.BLACK);
 		board[0][6] = new Knight(Color.BLACK);
 		board[0][7] = new Rook(Color.BLACK);
@@ -33,6 +34,7 @@ public class Board
 			board[1][i] = new Pawn(Color.BLACK);
 		}
 		
+		//Create the white pieces
 		for (int i = 0; i < BOARD_LENGTH; i++)
 		{
 			board[6][i] = new Pawn(Color.WHITE);
@@ -41,11 +43,23 @@ public class Board
 		board[7][1] = new Knight(Color.WHITE);
 		board[7][2] = new Bishop(Color.WHITE);
 		board[7][3] = new Queen(Color.WHITE);
-		board[7][4] = new King(Color.WHITE);
-		whiteKingSpace = new Point(4, 7);
+		whiteKing = new King(Color.WHITE);
+		board[7][4] = whiteKing;
 		board[7][5] = new Bishop(Color.WHITE);
 		board[7][6] = new Knight(Color.WHITE);
 		board[7][7] = new Rook(Color.WHITE);
+		
+		//Set the locations of the pieces
+		for (int r = 0; r < BOARD_LENGTH; r++)
+		{
+			for (int c = 0; c < BOARD_LENGTH; c++)
+			{
+				if (board[r][c] != null)
+				{
+					board[r][c].setLocation(r, c);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -82,6 +96,10 @@ public class Board
 	public void setPiece(Piece piece, int row, int column)
 	{
 		board[row][column] = piece;
+		if (piece != null)
+		{
+			piece.setLocation(row, column);
+		}
 	}
 	
 	/**
@@ -95,21 +113,8 @@ public class Board
 	 */
 	public void movePiece(int startRow, int startCol, int endRow, int endCol)
 	{
-		board[endRow][endCol] = board[startRow][startCol];
+		setPiece(board[startRow][startCol], endRow, endCol);
 		board[startRow][startCol] = null;
-		
-		//Keep track of king locations
-		if (board[endRow][endCol] instanceof King)
-		{
-			if (board[endRow][endCol].getColor() == Color.BLACK)
-			{
-				blackKingSpace.setLocation(endCol, endRow);
-			}
-			else
-			{
-				whiteKingSpace.setLocation(endCol, endRow);
-			}
-		}
 	}
 	
 	/**
@@ -117,7 +122,7 @@ public class Board
 	 */
 	public Point getWhiteKingSpace()
 	{
-		return whiteKingSpace;
+		return whiteKing.getLocation();
 	}
 	
 	/**
@@ -125,6 +130,6 @@ public class Board
 	 */
 	public Point getBlackKingSpace()
 	{
-		return blackKingSpace;
+		return blackKing.getLocation();
 	}
 }

@@ -1,4 +1,6 @@
 package board;
+
+import java.awt.Point;
 import javax.swing.ImageIcon;
 
 /**
@@ -9,9 +11,9 @@ public abstract class Piece
 	protected Color color; //either black or white
 	protected ImageIcon image;
 	
-	//location of the piece on the board
-	protected int row;
-	protected int column;
+	//location of the piece on the board.
+	//x = col, y = row: (col, row)
+	protected Point location;
 	
 	//Directory where piece images are stored
 	protected static final String IMAGE_PATH = "resources/pieces/";
@@ -19,10 +21,30 @@ public abstract class Piece
 	//File extension of piece images
 	private static final String FILE_EXTENSION = ".png";
 	
+	/**
+	 * Creates a chess piece with a color and no location.
+	 * Location should be set after creation.
+	 * 
+	 * @param color the color of the piece
+	 */
 	protected Piece(Color color)
 	{
 		this.color = color;
 		this.image = new ImageIcon(getImageFilePath());
+		location = new Point(0, 0);
+	}
+	
+	/**
+	 * Creates a chess piece with a color and a location.
+	 * 
+	 * @param color the color of the piece
+	 * @param startRow the starting row of the piece
+	 * @param startCol the starting column of the piece
+	 */
+	protected Piece(Color color, int startRow, int startCol)
+	{
+		this(color);
+		this.setLocation(startCol, startRow);
 	}
 	
 	public Color getColor()
@@ -43,6 +65,17 @@ public abstract class Piece
 	public void setImage(ImageIcon image)
 	{
 		this.image = image;
+	}
+	
+	public void setLocation(int row, int col)
+	{
+		location.setLocation(col, row);
+		System.out.println("location changed to " + location);
+	}
+	
+	public Point getLocation()
+	{
+		return location;
 	}
 	
 	/**
@@ -71,12 +104,6 @@ public abstract class Piece
 	 */
 	protected boolean isClearDiagonalPath(Board board, int startRow, int startCol, int endRow, int endCol)
 	{
-		//cannot move to current position
-		if (startRow == endRow && startCol == endCol)
-		{
-			return false;
-		}
-		
 		//Distance traveled in both directions will be the same for diagonal movements
 		if (Math.abs(startRow - endRow) == Math.abs(startCol - endCol))
 		{
@@ -149,7 +176,14 @@ public abstract class Piece
 	 * @param endCol the column to move to
 	 * @return true if the move can be legally made
 	 */
-	public abstract boolean canMove(Board board, int startRow, int startCol, int endRow, int endCol);
+	public boolean canMove(Board board, int startRow, int startCol, int endRow, int endCol)
+	{
+		//no piece can move to a space occupied by a piece of the same color,
+		//and destination cannot be same as start
+		Piece destinationPiece = board.getPiece(endRow, endCol);
+		return (destinationPiece == null || destinationPiece.getColor() != this.getColor()) 
+				&& !(startRow == endRow && startCol == endCol);
+	}
 	
 	
 	@Override

@@ -11,7 +11,8 @@ public class Rook extends Piece
 	public boolean canMove(Board board, int startRow, int startCol, int endRow, int endCol)
 	{
 		//can move either horizontally or vertically
-		return isClearHorizontalOrVerticalPath(board, startRow, startCol, endRow, endCol);
+		return super.canMove(board, startRow, startCol, endRow, endCol)
+			&& isClearHorizontalOrVerticalPath(board, startRow, startCol, endRow, endCol);
 	}
 	
 	@Override

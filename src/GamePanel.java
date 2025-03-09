@@ -109,10 +109,11 @@ public class GamePanel extends JPanel
 	{
 		//move the piece and switch turns
 		board.movePiece(selectedSpace.y, selectedSpace.x, destinationRow, destinationCol);
-		System.out.println("moved " + board.getPiece(destinationRow, destinationCol) + " to " + destinationRow + "," + destinationCol);
+		Piece movedPiece = board.getPiece(destinationRow, destinationCol);
+		System.out.println("moved " + movedPiece + " to " + destinationRow + "," + destinationCol);
 		
 		//check for pawn promotion
-		if (board.getPiece(destinationRow, destinationCol) instanceof Pawn)
+		if (movedPiece instanceof Pawn)
 		{
 			promotePawn(destinationRow, destinationCol);
 		}
@@ -235,7 +236,6 @@ public class GamePanel extends JPanel
 		//revert board state
 		board.movePiece(endRow, endCol, startRow, startCol);
 		board.setPiece(endPiece, endRow, endCol);
-		
 		
 		return isInCheck;
 	}

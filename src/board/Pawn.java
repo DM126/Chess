@@ -1,15 +1,24 @@
 package board;
 
 public class Pawn extends Piece
-{	
+{
+	//Used to tell if the pawn is on the starting row, and if it can be captured en passant
+	private boolean canBeCapturedEnPassant;
+	
 	public Pawn(Color color)
 	{
 		super(color);
+		canBeCapturedEnPassant = false;
 	}
 	
 	@Override
 	public boolean canMove(Board board, int startRow, int startCol, int endRow, int endCol)
 	{
+		if (!super.canMove(board, startRow, startCol, endRow, endCol))
+		{
+			return false;
+		}
+		
 		//TODO add en passant
 		//Black moves down the board (positive direction), white moves up the board (negative direction)
 		int rowDiff = (color == Color.BLACK) ? 1 : -1;
@@ -48,7 +57,7 @@ public class Pawn extends Piece
 		return (color == Color.BLACK && 
 				startRow == 1 && 
 				endRow == 3 && 
-				board.isEmptySpace(endRow + 1, endCol))
+				board.isEmptySpace(endRow - 1, endCol))
 			|| (color == Color.WHITE && 
 				startRow == Board.BOARD_LENGTH - 2 && 
 				endRow == startRow - 2 && 
