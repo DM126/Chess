@@ -10,12 +10,6 @@ public class Bishop extends Piece
 	@Override
 	public boolean canMove(Board board, int startRow, int startCol, int endRow, int endCol)
 	{
-		//cannot move to current position
-		if (startRow == endRow && startCol == endCol)
-		{
-			return false;
-		}
-		
 		return isClearDiagonalPath(board, startRow, startCol, endRow, endCol);
 	}
 	

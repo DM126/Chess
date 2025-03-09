@@ -71,6 +71,12 @@ public abstract class Piece
 	 */
 	protected boolean isClearDiagonalPath(Board board, int startRow, int startCol, int endRow, int endCol)
 	{
+		//cannot move to current position
+		if (startRow == endRow && startCol == endCol)
+		{
+			return false;
+		}
+		
 		//Distance traveled in both directions will be the same for diagonal movements
 		if (Math.abs(startRow - endRow) == Math.abs(startCol - endCol))
 		{
