@@ -115,11 +115,16 @@ public class Board
 	 * @param startCol the starting column
 	 * @param endRow the ending row
 	 * @param endCol the ending column
+	 * @return the move taken
 	 */
-	public void simulateMove(int startRow, int startCol, int endRow, int endCol)
+	public Move simulateMove(int startRow, int startCol, int endRow, int endCol)
 	{
+		Move move = new Move(startRow, startCol, endRow, endCol, board[endRow][endCol]);
+		
 		setPiece(board[startRow][startCol], endRow, endCol);
 		board[startRow][startCol] = null;
+		
+		return move;
 	}
 	
 	/**
@@ -131,12 +136,14 @@ public class Board
 	 * @param endRow the ending row
 	 * @param endCol the ending column
 	 */
-	public void movePiece(int startRow, int startCol, int endRow, int endCol)
+	public Move movePiece(int startRow, int startCol, int endRow, int endCol)
 	{
-		simulateMove(startRow, startCol, endRow, endCol);
+		Move move = simulateMove(startRow, startCol, endRow, endCol);
 		
 		//Check if en passant is possible after the move
 		setEnpassant(startRow, endRow, endCol);
+		
+		return move;
 	}
 	
 	/**
@@ -185,5 +192,14 @@ public class Board
 		{
 			enPassantSpace = null;
 		}
+	}
+	
+	/**
+	 * Reverts the board to the state before a move was done.
+	 */
+	public void undoMove(Move move)
+	{
+		simulateMove(move.getEnd().y, move.getEnd().x, move.getStart().y, move.getStart().x);
+		setPiece(move.getCaptured(), move.getEnd().y, move.getEnd().x);
 	}
 }
