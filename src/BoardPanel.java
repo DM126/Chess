@@ -65,7 +65,7 @@ public class BoardPanel extends JPanel
 	private class ClickListener implements MouseListener
 	{
 		@Override
-		public void mouseClicked(MouseEvent e)
+		public void mousePressed(MouseEvent e)
 		{
 			//integer division done to get the index in the board array
 			int r = e.getY() / SPACE_SIZE;
@@ -76,7 +76,7 @@ public class BoardPanel extends JPanel
 
 		//Unimplemented methods:
 		@Override
-		public void mousePressed(MouseEvent e) {}
+		public void mouseClicked(MouseEvent e) {}
 		@Override
 		public void mouseReleased(MouseEvent e) {}
 		@Override
