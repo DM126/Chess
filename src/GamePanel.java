@@ -167,15 +167,12 @@ public class GamePanel extends JPanel
 			for (int c = 0; c < Board.BOARD_LENGTH; c++)
 			{
 				Piece piece = board.getPiece(r, c);
-				if (piece != null && piece.getColor() != color)
+				if (piece != null && piece.getColor() != color && piece.canMove(board, r, c, kingSpace.y, kingSpace.x))
 				{
-					if (piece.canMove(board, r, c, kingSpace.y, kingSpace.x))
-					{
-						//TODO debug remove
-						System.out.println(color + " king is in check");
-						
-						return true;
-					}
+					//TODO debug remove
+					System.out.println(color + " king is in check");
+					
+					return true;
 				}
 			}
 		}
@@ -198,25 +195,40 @@ public class GamePanel extends JPanel
 			for (int c1 = 0; c1 < Board.BOARD_LENGTH; c1++)
 			{
 				Piece piece = board.getPiece(r1, c1);
-				if (piece != null && piece.getColor() == color)
+				if (piece != null && piece.getColor() == color && anyValidMovesExist(r1, c1, piece))
 				{
-					for (int r2 = 0; r2 < Board.BOARD_LENGTH; r2++)
-					{
-						for (int c2 = 0; c2 < Board.BOARD_LENGTH; c2++)
-						{
-							if (!(r1 == r2 && c1 == c2) &&
-								piece.canMove(board, r1, c1, r2, c2) &&
-								!leavesKingInCheck(r1, c1, r2, c2))
-							{
-								return false;
-							}
-						}
-					}
+					return false;
 				}
 			}
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Checks if any valid moves exist for the piece at r1,c1.
+	 * 
+	 * @param r1 the row of the piece
+	 * @param c1 the column of the piece
+	 * @param piece the piece to move
+	 * @return true if there are any valid moves for the piece
+	 */
+	private boolean anyValidMovesExist(int r1, int c1, Piece piece)
+	{
+		for (int r2 = 0; r2 < Board.BOARD_LENGTH; r2++)
+		{
+			for (int c2 = 0; c2 < Board.BOARD_LENGTH; c2++)
+			{
+				if (!(r1 == r2 && c1 == c2) &&
+					piece.canMove(board, r1, c1, r2, c2) &&
+					!leavesKingInCheck(r1, c1, r2, c2))
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 	/**
