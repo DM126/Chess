@@ -10,17 +10,19 @@ import board.Color; //resolve naming collision with awt.Color
  */
 public class GamePanel extends JPanel
 {
-	private ImageIcon boardImage;
 	private Board board;
+	
+	//Panel with the chessboard
+	BoardPanel boardPanel;
+	
+	//Displays the previous move and current game state
+	JLabel stateDescription;
 	
 	private boolean isWhitesTurn; //true if it is currently white's turn
 	
 	//Space of the currently selected piece. null if no piece is selected.
 	//Values range from 0-8. x=column, y=row
 	private Point selectedSpace;
-
-	//dimensions of a space in pixels, used for drawing the pieces
-	private final int SPACE_SIZE;
 	
 	public GamePanel()
 	{
@@ -28,43 +30,21 @@ public class GamePanel extends JPanel
 		
 		isWhitesTurn = true;
 		
-		boardImage = new ImageIcon("resources/chessboard.png");
-		SPACE_SIZE = boardImage.getIconWidth() / Board.BOARD_LENGTH;
+		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
-		ClickListener listener = new ClickListener();
-		addMouseListener(listener);
+		boardPanel = new BoardPanel(this, board);
+		add(boardPanel);
 		
-		setPreferredSize(new Dimension(boardImage.getIconWidth(), boardImage.getIconHeight()));
+		stateDescription = new JLabel("Begin game");
+		add(stateDescription);
+		
+		
 	}
 	
 	public void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
-		boardImage.paintIcon(this, g, 0, 0);
-		
-		for (int r = 0; r < Board.BOARD_LENGTH; r++)
-		{
-			for (int c = 0; c < Board.BOARD_LENGTH; c++)
-			{
-				if (board.getPiece(r, c) != null)
-				{
-					//board is drawn so that white is on the bottom
-					board.getPiece(r, c).getImage().paintIcon(this, g, c * SPACE_SIZE, r * SPACE_SIZE);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Flips the row on screen. Might need this later if I decide to go with
-	 * official chess notation for board order.
-	 * 
-	 * @param row the row on screen
-	 * @return the row in the board array
-	 */
-	private static int flipRow(int row)
-	{
-		return Math.abs(row - Board.BOARD_LENGTH) - 1;
+		boardPanel.repaint();
 	}
 	
 	/**
@@ -75,7 +55,7 @@ public class GamePanel extends JPanel
 	 * @param row the row clicked
 	 * @param col the column clicked
 	 */
-	private void spaceClicked(int row, int col)
+	public void spaceClicked(int row, int col)
 	{
 		if (selectedSpace == null)
 		{
@@ -316,29 +296,5 @@ public class GamePanel extends JPanel
 		}
 		while (choice == JOptionPane.CLOSED_OPTION);
 		return options[choice];
-	}
-	
-	private class ClickListener implements MouseListener
-	{
-		@Override
-		public void mouseClicked(MouseEvent e)
-		{
-			//integer division done to get the index in the board array
-			int r = e.getY() / SPACE_SIZE;
-			int c = e.getX() / SPACE_SIZE;
-			
-			spaceClicked(r, c);
-		}
-
-		//Unimplemented methods:
-		@Override
-		public void mousePressed(MouseEvent e) {}
-		@Override
-		public void mouseReleased(MouseEvent e) {}
-		@Override
-		public void mouseEntered(MouseEvent e) {}
-		@Override
-		public void mouseExited(MouseEvent e) {}
-		
 	}
 }
