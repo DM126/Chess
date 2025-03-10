@@ -128,9 +128,9 @@ public class Board
 		//Check if move is en passant
 		if (enPassantSpace != null &&
 			board[startRow][startCol] instanceof Pawn &&
-			startCol != endCol && //Check if pawn moved diagonally to an empty space (could also check if end space is same as enPassantSpace)
-			board[endRow][endCol] == null)
+			enPassantSpace.equals(new Point(endCol, endRow)))
 		{
+//			System.out.println("simulating en passant");
 			move.setWasEnPassant(true);
 			move.setCaptured(board[startRow][endCol]);
 			board[startRow][endCol] = null;
@@ -216,13 +216,10 @@ public class Board
 	public void undoMove(Move move)
 	{
 		simulateMove(move.getEnd().y, move.getEnd().x, move.getStart().y, move.getStart().x);
-		if (move.wasEnPassant())
+		Piece captured = move.getCaptured();
+		if (captured != null)
 		{
-			setPiece(move.getCaptured(), Math.min(move.getEnd().y, move.getStart().y) + 1, move.getEnd().x);
-		}
-		else
-		{
-			setPiece(move.getCaptured(), move.getEnd().y, move.getEnd().x);
+			setPiece(captured, captured.getLocation().y, captured.getLocation().x);
 		}
 	}
 }

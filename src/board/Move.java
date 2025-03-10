@@ -69,4 +69,10 @@ public class Move
 	{
 		this.wasEnPassant = wasEnPassant;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "Move: (" + start.y + "," + start.x + ") to (" + end.y + "," + end.x + "). captured: " + captured + ". En passant: " + wasEnPassant;
+	}
 }
