@@ -13,6 +13,9 @@ public class Board
 	private Piece blackKing;
 	private Piece whiteKing;
 	
+	//Keeps track of a space where an en passant capture can be made.
+	//Will be between where the pawn making the capture will end up.
+	//Will be set after a pawn moves two spaces, and will be set to null after any other move.
 	private Point enPassantSpace;
 	
 	//number of rows/columns on the board
@@ -121,6 +124,18 @@ public class Board
 	{
 		Move move = new Move(startRow, startCol, endRow, endCol, board[endRow][endCol]);
 		
+		//TODO refactor the logic for this to be part of the Move class and remove boolean variable.
+		//Check if move is en passant
+		if (enPassantSpace != null &&
+			board[startRow][startCol] instanceof Pawn &&
+			startCol != endCol && //Check if pawn moved diagonally to an empty space (could also check if end space is same as enPassantSpace)
+			board[endRow][endCol] == null)
+		{
+			move.setWasEnPassant(true);
+			move.setCaptured(board[startRow][endCol]);
+			board[startRow][endCol] = null;
+		}
+		
 		setPiece(board[startRow][startCol], endRow, endCol);
 		board[startRow][startCol] = null;
 		
@@ -130,6 +145,7 @@ public class Board
 	/**
 	 * Moves a piece from one space to another, empties the starting space.
 	 * Does not check if spaces are empty or filled, only changes values!
+	 * This move is not a simulated move and will change the board state.
 	 * 
 	 * @param startRow the starting row
 	 * @param startCol the starting column
@@ -200,6 +216,13 @@ public class Board
 	public void undoMove(Move move)
 	{
 		simulateMove(move.getEnd().y, move.getEnd().x, move.getStart().y, move.getStart().x);
-		setPiece(move.getCaptured(), move.getEnd().y, move.getEnd().x);
+		if (move.wasEnPassant())
+		{
+			setPiece(move.getCaptured(), Math.min(move.getEnd().y, move.getStart().y) + 1, move.getEnd().x);
+		}
+		else
+		{
+			setPiece(move.getCaptured(), move.getEnd().y, move.getEnd().x);
+		}
 	}
 }
